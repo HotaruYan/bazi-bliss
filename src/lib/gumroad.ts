@@ -44,8 +44,9 @@ export const PRODUCT_MAP: Record<string, ProductMapping> = {
 export function getGumroadCheckoutUrl(productId: string): string {
   const product = PRODUCT_MAP[productId];
   if (!product) return THANK_YOU_URL;
-  // wanted=true 跳到付款页面而非产品描述页
-  return `https://bazibliss.gumroad.com/l/${product.gumroadPermalink}?wanted=true`;
+  // wanted=true 跳过产品描述页直达付款
+  // url= 指定付款成功后跳回 thank-you 页
+  return `https://bazibliss.gumroad.com/l/${product.gumroadPermalink}?wanted=true&url=${encodeURIComponent(THANK_YOU_URL)}`;
 }
 
 export function getProductByGumroadPermalink(permalink: string): ProductMapping | undefined {
