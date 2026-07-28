@@ -147,6 +147,17 @@ export default function OrderForm() {
       const data = await res.json();
 
       if (data.checkoutUrl) {
+        // 订单数据暂存浏览器，付款后 thank-you 页读取并触发发货
+        localStorage.setItem("bazi_order", JSON.stringify({
+          name: form.name,
+          email: form.email,
+          birthDate: form.birthDate,
+          birthTime: form.birthTime || "unknown",
+          birthCity: form.birthCity,
+          gender: form.gender,
+          focusArea: form.focusArea,
+          productId: form.product,
+        }));
         window.location.href = data.checkoutUrl;
       } else if (data.error) {
         setErrors({ email: data.error });
