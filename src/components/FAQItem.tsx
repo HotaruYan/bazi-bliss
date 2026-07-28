@@ -11,14 +11,14 @@ export default function FAQItem({ question, answer }: FAQItemProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-stone-200 last:border-0">
+    <div className="border-b border-[#2a2a2a] last:border-0">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full py-5 flex items-center justify-between text-left hover:text-amber-700 transition-colors"
+        className="w-full py-5 flex items-center justify-between text-left hover:text-[#c8a951] transition-colors"
       >
-        <span className="font-medium text-stone-900 pr-4">{question}</span>
+        <span className="font-medium text-[#f0e6d3] pr-4">{question}</span>
         <svg
-          className={`w-5 h-5 text-stone-400 shrink-0 transition-transform duration-300 ${
+          className={`w-5 h-5 text-[#6b6459] shrink-0 transition-transform duration-300 ${
             open ? "rotate-180" : ""
           }`}
           fill="none"
@@ -36,7 +36,7 @@ export default function FAQItem({ question, answer }: FAQItemProps) {
       <div
         className={`faq-answer ${open ? "open" : "closed"}`}
       >
-        <p className="pb-5 text-sm text-stone-600 leading-relaxed">{answer}</p>
+        <p className="pb-5 text-sm text-[#9c9588] leading-relaxed">{answer}</p>
       </div>
     </div>
   );

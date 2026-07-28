@@ -51,37 +51,36 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-stone-50 text-stone-900">
+      <body className="min-h-full flex flex-col bg-[#0f0f0f] text-[#f0e6d3]">
         {/* Header */}
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-stone-200">
+        <header className="sticky top-0 z-50 bg-[#0f0f0f]/85 backdrop-blur-md border-b border-[#2a2a2a]">
           <nav className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
             <Link
               href="/"
-              className="text-xl font-bold tracking-tight text-stone-900 hover:text-amber-700 transition-colors"
+              className="text-xl font-bold tracking-tight text-[#f0e6d3] hover:text-[#c8a951] transition-colors"
             >
-              Bazi<span className="text-amber-600">Bliss</span>
+              Bazi<span className="text-[#c8a951]">Bliss</span>
             </Link>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-stone-600 hover:text-amber-700 transition-colors"
+                  className="text-[#9c9588] hover:text-[#c8a951] transition-colors"
                 >
                   {link.label}
                 </Link>
               ))}
               <Link
                 href="/order"
-                className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm font-semibold"
+                className="px-4 py-2 bg-[#c8a951] text-[#0f0f0f] rounded-lg hover:bg-[#d4b96a] transition-colors text-sm font-semibold"
               >
                 Order Now
               </Link>
             </div>
-            {/* Mobile menu trigger — simplified for MVP */}
             <Link
               href="/order"
-              className="md:hidden px-3 py-1.5 bg-amber-600 text-white rounded-lg text-sm font-semibold"
+              className="md:hidden px-3 py-1.5 bg-[#c8a951] text-[#0f0f0f] rounded-lg text-sm font-semibold"
             >
               Order
             </Link>
@@ -92,11 +91,11 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
 
         {/* Footer */}
-        <footer className="bg-stone-900 text-stone-400 py-16">
+        <footer className="bg-[#0a0a0a] text-[#9c9588] py-16 border-t border-[#2a2a2a]">
           <div className="max-w-5xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10">
             <div>
-              <h3 className="text-white font-bold text-lg mb-3">
-                Bazi<span className="text-amber-500">Bliss</span>
+              <h3 className="text-[#f0e6d3] font-bold text-lg mb-3">
+                Bazi<span className="text-[#c8a951]">Bliss</span>
               </h3>
               <p className="text-sm leading-relaxed">
                 Ancient Chinese wisdom meets modern AI. Discover your life
@@ -104,7 +103,7 @@ export default function RootLayout({
               </p>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-3 text-sm uppercase tracking-wider">
+              <h4 className="text-[#f0e6d3] font-semibold mb-3 text-sm uppercase tracking-wider">
                 Pages
               </h4>
               <ul className="space-y-2 text-sm">
@@ -112,7 +111,7 @@ export default function RootLayout({
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="hover:text-amber-400 transition-colors"
+                      className="hover:text-[#c8a951] transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -121,7 +120,7 @@ export default function RootLayout({
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-3 text-sm uppercase tracking-wider">
+              <h4 className="text-[#f0e6d3] font-semibold mb-3 text-sm uppercase tracking-wider">
                 Disclaimer
               </h4>
               <p className="text-xs leading-relaxed">
@@ -132,7 +131,7 @@ export default function RootLayout({
               </p>
             </div>
           </div>
-          <div className="max-w-5xl mx-auto px-4 mt-10 pt-6 border-t border-stone-800 text-center text-xs">
+          <div className="max-w-5xl mx-auto px-4 mt-10 pt-6 border-t border-[#2a2a2a] text-center text-xs">
             &copy; {new Date().getFullYear()} Bazi Bliss. All rights reserved.
             For entertainment purposes only.
           </div>

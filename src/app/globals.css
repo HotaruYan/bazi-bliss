@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #fafaf9;
-  --color-foreground: #1c1917;
-  --color-accent: #b45309;
-  --color-accent-light: #f59e0b;
-  --color-surface: #ffffff;
-  --color-muted: #78716c;
-  --color-border: #e7e5e4;
+  --color-background: #0f0f0f;
+  --color-foreground: #f0e6d3;
+  --color-accent: #c8a951;
+  --color-accent-light: #d4b96a;
+  --color-surface: #1a1a1a;
+  --color-surface-light: #252525;
+  --color-muted: #9c9588;
+  --color-border: #2a2a2a;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -18,16 +19,55 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* 东方水墨风格的装饰性分区线 */
+/* 隐藏滚轮时间选择器的滚动条 */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* 太极图背景装饰 */
+.bg-taiji {
+  position: relative;
+}
+.bg-taiji::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(
+    circle at center,
+    rgba(200, 169, 81, 0.04) 0%,
+    rgba(200, 169, 81, 0.02) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 太极双鱼 SVG 装饰 */
+.taiji-symbol {
+  position: absolute;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 水墨分隔线 */
 .ink-divider {
   position: relative;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    #d6d3d1 20%,
-    #b45309 50%,
-    #d6d3d1 80%,
+    #2a2a2a 20%,
+    #c8a951 50%,
+    #2a2a2a 80%,
     transparent 100%
   );
 }
@@ -38,15 +78,32 @@ body {
 }
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(180, 83, 9, 0.08);
+  box-shadow: 0 12px 40px rgba(200, 169, 81, 0.08);
 }
 
 /* 金色渐变文字 */
 .text-gold {
-  background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #f59e0b 100%);
+  background: linear-gradient(135deg, #c8a951 0%, #d4b96a 50%, #e0cc7a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* 金色按钮 */
+.btn-gold {
+  background: linear-gradient(135deg, #a68a3c 0%, #c8a951 50%, #d4b96a 100%);
+  color: #0f0f0f;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-gold:hover {
+  background: linear-gradient(135deg, #c8a951 0%, #d4b96a 50%, #e0cc7a 100%);
+  box-shadow: 0 8px 30px rgba(200, 169, 81, 0.3);
+}
+
+/* 金色边框 */
+.border-gold {
+  border-color: #c8a951;
 }
 
 /* FAQ 折叠动画 */

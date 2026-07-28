@@ -25,25 +25,25 @@ export default function ProductCard({
 
   return (
     <div
-      className={`relative rounded-2xl border-2 p-8 flex flex-col card-hover ${
+      className={`relative rounded-2xl border-2 p-8 flex flex-col transition-all duration-300 h-full ${
         highlighted
-          ? "border-amber-500 bg-white shadow-xl shadow-amber-100/50"
-          : "border-stone-200 bg-white"
+          ? "border-[#c8a951] bg-[#1a1a1a] shadow-xl shadow-[#c8a951]/10"
+          : "border-[#2a2a2a] bg-[#1a1a1a] hover:border-[#c8a951] hover:shadow-xl hover:shadow-[#c8a951]/10"
       }`}
     >
       {highlighted && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-amber-600 text-white text-xs font-bold rounded-full uppercase tracking-wider">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#c8a951] text-[#0f0f0f] text-xs font-bold rounded-full uppercase tracking-wider">
           Most Popular
         </span>
       )}
 
-      <h3 className="text-xl font-bold text-stone-900 mb-1">{title}</h3>
-      <p className="text-sm text-stone-500 mb-4">{subtitle}</p>
+      <h3 className="text-xl font-bold text-[#f0e6d3] mb-1">{title}</h3>
+      <p className="text-sm text-[#9c9588] mb-4">{subtitle}</p>
 
       <div className="mb-6">
-        <span className="text-4xl font-bold text-stone-900">{price}</span>
+        <span className="text-4xl font-bold text-[#f0e6d3]">{price}</span>
         {originalPrice && (
-          <span className="ml-2 text-lg text-stone-400 line-through">
+          <span className="ml-2 text-lg text-[#5c5548] line-through">
             {originalPrice}
           </span>
         )}
@@ -51,9 +51,9 @@ export default function ProductCard({
 
       <ul className="space-y-3 mb-8 flex-1">
         {features.map((feature, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-stone-600">
+          <li key={i} className="flex items-start gap-2 text-sm text-[#9c9588]">
             <svg
-              className="w-4 h-4 text-amber-600 mt-0.5 shrink-0"
+              className="w-4 h-4 text-[#c8a951] mt-0.5 shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -76,8 +76,8 @@ export default function ProductCard({
         }
         className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${
           highlighted
-            ? "bg-amber-600 text-white hover:bg-amber-700 shadow-lg shadow-amber-200"
-            : "bg-stone-900 text-white hover:bg-stone-800"
+            ? "bg-[#c8a951] text-[#0f0f0f] hover:bg-[#d4b96a] shadow-lg shadow-[#c8a951]/20"
+            : "bg-[#252525] text-[#f0e6d3] hover:bg-[#2a2a2a]"
         }`}
       >
         Choose {title}

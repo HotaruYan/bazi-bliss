@@ -1,53 +1,7 @@
 import Link from "next/link";
-import ProductCard from "@/components/ProductCard";
+import ProductCards from "@/components/ProductCards";
 import FAQItem from "@/components/FAQItem";
 import TestimonialCard from "@/components/TestimonialCard";
-
-const products = [
-  {
-    title: "Life Blueprint",
-    subtitle: "Complete birth chart analysis",
-    price: "$39.99",
-    features: [
-      "8000+ word personalized PDF report",
-      "5 dimensions: Personality, Career, Wealth, Love & Health",
-      "Your 10-year luck cycles explained",
-      "Element balance & energy type analysis",
-      "Delivered within 24 hours",
-    ],
-    highlighted: true,
-    productId: "life-blueprint" as const,
-  },
-  {
-    title: "Year Ahead",
-    subtitle: "Annual forecast & guidance",
-    price: "$19.99",
-    features: [
-      "3000+ word yearly forecast report",
-      "Month-by-month energy breakdown",
-      "Key opportunity windows identified",
-      "Challenge periods with coping strategies",
-      "Delivered within 24 hours",
-    ],
-    highlighted: false,
-    productId: "year-ahead" as const,
-  },
-  {
-    title: "Annual Pass",
-    subtitle: "Year-round guidance",
-    price: "$99.99",
-    originalPrice: "$139.97",
-    features: [
-      "Everything in Life Blueprint",
-      "Everything in Year Ahead",
-      "Monthly email forecasts for 12 months",
-      "Priority email support",
-      "One free follow-up question",
-    ],
-    highlighted: false,
-    productId: "annual-pass" as const,
-  },
-];
 
 const faqs = [
   {
@@ -100,21 +54,36 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-stone-900 via-stone-900 to-stone-800 text-white">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-amber-600/10 to-transparent blur-3xl pointer-events-none" />
-        <div className="absolute top-10 right-20 w-32 h-32 rounded-full bg-amber-500/5 blur-2xl pointer-events-none" />
+      <section className="relative overflow-hidden bg-[#0f0f0f]">
+        {/* 太极背景装饰 */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <svg
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] opacity-[0.04]"
+            viewBox="0 0 200 200"
+            fill="none"
+          >
+            <circle cx="100" cy="100" r="98" stroke="#c8a951" strokeWidth="2" />
+            <path
+              d="M100 2 A98 98 0 0 1 100 198 A49 49 0 0 1 100 100 A49 49 0 0 0 100 2Z"
+              fill="#c8a951"
+            />
+            <circle cx="100" cy="51" r="16" fill="#0f0f0f" />
+            <circle cx="100" cy="149" r="16" fill="#c8a951" />
+          </svg>
+        </div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[#c8a951]/8 to-transparent blur-3xl pointer-events-none" />
 
-        <div className="relative max-w-4xl mx-auto px-4 py-24 md:py-36 text-center">
-          <p className="text-amber-400 text-sm font-semibold uppercase tracking-[0.2em] mb-4">
+        <div className="relative max-w-4xl mx-auto px-4 py-24 md:py-36 text-center z-10">
+          <p className="text-[#c8a951] text-sm font-semibold uppercase tracking-[0.2em] mb-4">
             Ancient Wisdom · Modern Clarity
           </p>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight mb-6 text-[#f0e6d3]">
             Discover Your{" "}
             <span className="text-gold">Life Blueprint</span>
             <br />
             with Ancient Chinese Wisdom
           </h1>
-          <p className="text-lg md:text-xl text-stone-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+          <p className="text-lg md:text-xl text-[#9c9588] max-w-2xl mx-auto mb-10 leading-relaxed">
             Your birth date holds a map of your personality, career path,
             relationships, and life rhythm. Unlock it with AI-powered Bazi
             analysis — the world&apos;s oldest personality system, made for
@@ -123,31 +92,31 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/order?product=life-blueprint"
-              className="px-8 py-4 bg-amber-600 text-white rounded-xl font-semibold text-lg hover:bg-amber-700 transition-all shadow-xl shadow-amber-600/25"
+              className="px-8 py-4 btn-gold rounded-xl text-lg shadow-xl shadow-[#c8a951]/20"
             >
               Get Your Life Blueprint — $39.99
             </Link>
             <Link
               href="/order?product=year-ahead"
-              className="px-8 py-4 bg-white/10 text-white rounded-xl font-semibold text-lg hover:bg-white/20 transition-all border border-white/20"
+              className="px-8 py-4 bg-white/5 text-[#f0e6d3] rounded-xl font-semibold text-lg hover:bg-white/10 transition-all border border-[#2a2a2a]"
             >
               Try Year Ahead — $19.99
             </Link>
           </div>
-          <p className="mt-6 text-xs text-stone-500">
+          <p className="mt-6 text-xs text-[#9c9588]">
             Delivered within 24 hours · No account required · One-time payment
           </p>
         </div>
       </section>
 
       {/* Value Propositions */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-20 md:py-28 bg-[#0f0f0f]">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#f0e6d3] mb-4">
               Why People Are Discovering Their Bazi
             </h2>
-            <p className="text-stone-500 max-w-xl mx-auto">
+            <p className="text-[#9c9588] max-w-xl mx-auto">
               A 1,000-year-old system, now powered by AI to give you clarity in
               a chaotic world.
             </p>
@@ -184,11 +153,11 @@ export default function HomePage() {
               },
             ].map((vp, i) => (
               <div key={i} className="text-center">
-                <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-[#1a1a1a] text-[#c8a951] flex items-center justify-center border border-[#2a2a2a]">
                   {vp.icon}
                 </div>
-                <h3 className="text-lg font-bold text-stone-900 mb-2">{vp.title}</h3>
-                <p className="text-sm text-stone-500 leading-relaxed">{vp.desc}</p>
+                <h3 className="text-lg font-bold text-[#f0e6d3] mb-2">{vp.title}</h3>
+                <p className="text-sm text-[#9c9588] leading-relaxed">{vp.desc}</p>
               </div>
             ))}
           </div>
@@ -196,9 +165,9 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-stone-50">
+      <section className="py-20 bg-[#0a0a0a]">
         <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-stone-900 text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#f0e6d3] text-center mb-12">
             How It Works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -208,11 +177,11 @@ export default function HomePage() {
               { step: "3", title: "Receive Your Blueprint", desc: "Get your personalized 8000-word PDF report delivered to your inbox within 24 hours." },
             ].map((item) => (
               <div key={item.step} className="text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-amber-600 text-white font-bold text-lg flex items-center justify-center">
+                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#c8a951] text-[#0f0f0f] font-bold text-lg flex items-center justify-center">
                   {item.step}
                 </div>
-                <h3 className="font-bold text-stone-900 mb-2">{item.title}</h3>
-                <p className="text-sm text-stone-500">{item.desc}</p>
+                <h3 className="font-bold text-[#f0e6d3] mb-2">{item.title}</h3>
+                <p className="text-sm text-[#9c9588]">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -220,29 +189,25 @@ export default function HomePage() {
       </section>
 
       {/* Product Cards */}
-      <section className="py-20 md:py-28 bg-white" id="pricing">
+      <section className="py-20 md:py-28 bg-[#0f0f0f]" id="pricing">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#f0e6d3] mb-4">
               Choose Your Reading
             </h2>
-            <p className="text-stone-500 max-w-xl mx-auto">
+            <p className="text-[#9c9588] max-w-xl mx-auto">
               One-time payment. No subscription required (unless you want one).
               Delivered to your email within 24 hours.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-            {products.map((product) => (
-              <ProductCard key={product.productId} {...product} />
-            ))}
-          </div>
+          <ProductCards />
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-stone-50">
+      <section className="py-20 bg-[#0a0a0a]">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-stone-900 text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#f0e6d3] text-center mb-12">
             What Our Customers Say
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -254,9 +219,9 @@ export default function HomePage() {
       </section>
 
       {/* FAQ Preview */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-[#0f0f0f]">
         <div className="max-w-2xl mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-stone-900 text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#f0e6d3] text-center mb-12">
             Common Questions
           </h2>
           <div>
@@ -265,7 +230,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="text-center mt-8">
-            <Link href="/faq" className="text-amber-700 font-medium text-sm hover:text-amber-800 transition-colors">
+            <Link href="/faq" className="text-[#c8a951] font-medium text-sm hover:text-[#d4b96a] transition-colors">
               View all questions →
             </Link>
           </div>
@@ -273,18 +238,33 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-stone-900 text-white text-center">
-        <div className="max-w-2xl mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+      <section className="py-20 bg-[#0a0a0a] text-center relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <svg
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] opacity-[0.03]"
+            viewBox="0 0 200 200"
+            fill="none"
+          >
+            <circle cx="100" cy="100" r="98" stroke="#c8a951" strokeWidth="2" />
+            <path
+              d="M100 2 A98 98 0 0 1 100 198 A49 49 0 0 1 100 100 A49 49 0 0 0 100 2Z"
+              fill="#c8a951"
+            />
+            <circle cx="100" cy="51" r="16" fill="#0a0a0a" />
+            <circle cx="100" cy="149" r="16" fill="#c8a951" />
+          </svg>
+        </div>
+        <div className="max-w-2xl mx-auto px-4 relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#f0e6d3]">
             Ready to Discover Your Blueprint?
           </h2>
-          <p className="text-stone-400 mb-8 text-lg">
+          <p className="text-[#9c9588] mb-8 text-lg">
             Your birth chart contains wisdom that has guided people for over a
             thousand years. See what it reveals about you.
           </p>
           <Link
             href="/order?product=life-blueprint"
-            className="inline-block px-8 py-4 bg-amber-600 text-white rounded-xl font-semibold text-lg hover:bg-amber-700 transition-all shadow-xl shadow-amber-600/25"
+            className="inline-block px-8 py-4 btn-gold rounded-xl text-lg shadow-xl shadow-[#c8a951]/20"
           >
             Get Your Life Blueprint — $39.99
           </Link>

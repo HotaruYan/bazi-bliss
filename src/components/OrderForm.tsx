@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import TimeWheel from "./TimeWheel";
 
 type Product = "life-blueprint" | "year-ahead" | "annual-pass";
 
@@ -31,16 +32,15 @@ interface OrderFormData {
   birthDate: string;
   birthTime: string;
   birthCity: string;
+  gender: string;
   focusArea: string;
   product: Product;
 }
 
-const FOCUS_AREAS = [
-  { value: "general", label: "General Life Overview" },
-  { value: "career", label: "Career & Purpose" },
-  { value: "love", label: "Love & Relationships" },
-  { value: "wealth", label: "Wealth & Finances" },
-  { value: "health", label: "Health & Wellbeing" },
+const GENDER_OPTIONS = [
+  { value: "", label: "Select" },
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
 ];
 
 export default function OrderForm() {
@@ -50,6 +50,7 @@ export default function OrderForm() {
     birthDate: "",
     birthTime: "",
     birthCity: "",
+    gender: "",
     focusArea: "general",
     product: "life-blueprint",
   });
@@ -117,6 +118,7 @@ export default function OrderForm() {
     }
     if (!form.birthDate) newErrors.birthDate = "Birth date is required.";
     if (!form.birthCity.trim()) newErrors.birthCity = "Birth city is required.";
+    if (!form.gender) newErrors.gender = "Please select your gender.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -136,6 +138,7 @@ export default function OrderForm() {
           birthDate: form.birthDate,
           birthTime: form.birthTime || "unknown",
           birthCity: form.birthCity,
+          gender: form.gender,
           focusArea: form.focusArea,
           productId: form.product,
         }),
@@ -169,7 +172,7 @@ export default function OrderForm() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Product Selection */}
         <div>
-          <label className="block text-sm font-semibold text-stone-700 mb-3">
+          <label className="block text-sm font-semibold text-[#f0e6d3] mb-3">
             Select Your Reading
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -181,17 +184,17 @@ export default function OrderForm() {
                   onClick={() => updateField("product", key)}
                   className={`p-4 rounded-xl border-2 text-left transition-all ${
                     form.product === key
-                      ? "border-amber-500 bg-amber-50 shadow-md"
-                      : "border-stone-200 bg-white hover:border-stone-300"
+                      ? "border-[#c8a951] bg-[#252525] shadow-md"
+                      : "border-[#2a2a2a] bg-[#1a1a1a] hover:border-[#c8a951]/50"
                   }`}
                 >
-                  <div className="font-bold text-stone-900 text-sm">
+                  <div className="font-bold text-[#f0e6d3] text-sm">
                     {product.label}
                   </div>
-                  <div className="text-xs text-stone-500 mt-1">
+                  <div className="text-xs text-[#9c9588] mt-1">
                     {product.desc}
                   </div>
-                  <div className="text-amber-700 font-bold text-sm mt-2">
+                  <div className="text-[#c8a951] font-bold text-sm mt-2">
                     {product.price}
                   </div>
                 </button>
@@ -205,7 +208,7 @@ export default function OrderForm() {
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-semibold text-stone-700 mb-1.5"
+              className="block text-sm font-semibold text-[#f0e6d3] mb-1.5"
             >
               Full Name <span className="text-red-500">*</span>
             </label>
@@ -215,8 +218,8 @@ export default function OrderForm() {
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
               placeholder="Your full name"
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-white text-stone-900 placeholder-stone-400 focus:outline-none focus:border-amber-500 transition-colors ${
-                errors.name ? "border-red-400" : "border-stone-200"
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-[#1a1a1a] text-[#f0e6d3] placeholder-[#6b6459] focus:outline-none focus:border-[#c8a951] transition-colors ${
+                errors.name ? "border-red-400" : "border-[#2a2a2a]"
               }`}
             />
             {errors.name && (
@@ -227,7 +230,7 @@ export default function OrderForm() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-semibold text-stone-700 mb-1.5"
+              className="block text-sm font-semibold text-[#f0e6d3] mb-1.5"
             >
               Email Address <span className="text-red-500">*</span>
             </label>
@@ -237,8 +240,8 @@ export default function OrderForm() {
               value={form.email}
               onChange={(e) => updateField("email", e.target.value)}
               placeholder="you@email.com"
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-white text-stone-900 placeholder-stone-400 focus:outline-none focus:border-amber-500 transition-colors ${
-                errors.email ? "border-red-400" : "border-stone-200"
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-[#1a1a1a] text-[#f0e6d3] placeholder-[#6b6459] focus:outline-none focus:border-[#c8a951] transition-colors ${
+                errors.email ? "border-red-400" : "border-[#2a2a2a]"
               }`}
             />
             {errors.email && (
@@ -250,7 +253,7 @@ export default function OrderForm() {
         {/* Birth Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+            <label className="block text-sm font-semibold text-[#f0e6d3] mb-1.5">
               Birth Date <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -262,7 +265,7 @@ export default function OrderForm() {
                   setErrors((prev) => { const n = { ...prev }; delete n.birthDate; return n; });
                 }}
                 className={`px-3 py-3 rounded-xl border-2 bg-white text-stone-900 focus:outline-none focus:border-amber-500 transition-colors text-sm ${
-                  errors.birthDate && !birthMonth ? "border-red-400" : "border-stone-200"
+                  errors.birthDate && !birthMonth ? "border-red-400" : "border-[#2a2a2a]"
                 }`}
               >
                 {MONTHS.map((m) => (
@@ -277,7 +280,7 @@ export default function OrderForm() {
                   setErrors((prev) => { const n = { ...prev }; delete n.birthDate; return n; });
                 }}
                 className={`px-3 py-3 rounded-xl border-2 bg-white text-stone-900 focus:outline-none focus:border-amber-500 transition-colors text-sm ${
-                  errors.birthDate && !birthDay ? "border-red-400" : "border-stone-200"
+                  errors.birthDate && !birthDay ? "border-red-400" : "border-[#2a2a2a]"
                 }`}
               >
                 {DAYS.map((d) => (
@@ -292,7 +295,7 @@ export default function OrderForm() {
                   setErrors((prev) => { const n = { ...prev }; delete n.birthDate; return n; });
                 }}
                 className={`px-3 py-3 rounded-xl border-2 bg-white text-stone-900 focus:outline-none focus:border-amber-500 transition-colors text-sm ${
-                  errors.birthDate && !birthYear ? "border-red-400" : "border-stone-200"
+                  errors.birthDate && !birthYear ? "border-red-400" : "border-[#2a2a2a]"
                 }`}
               >
                 {YEARS.map((y) => (
@@ -306,50 +309,22 @@ export default function OrderForm() {
           </div>
 
           <div>
-            <label
-              htmlFor="birthTime"
-              className="block text-sm font-semibold text-stone-700 mb-1.5"
-            >
+            <label className="block text-sm font-semibold text-[#f0e6d3] mb-1.5">
               Birth Time
             </label>
-            <select
-              id="birthTime"
+            <TimeWheel
               value={form.birthTime}
-              onChange={(e) => updateField("birthTime", e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border-2 border-stone-200 bg-white text-stone-900 focus:outline-none focus:border-amber-500 transition-colors"
-            >
-              <option value="">Unknown (use noon)</option>
-              <option value="00:00">12:00 AM — Midnight</option>
-              <option value="01:00">1:00 AM</option>
-              <option value="02:00">2:00 AM</option>
-              <option value="03:00">3:00 AM</option>
-              <option value="04:00">4:00 AM</option>
-              <option value="05:00">5:00 AM</option>
-              <option value="06:00">6:00 AM</option>
-              <option value="07:00">7:00 AM</option>
-              <option value="08:00">8:00 AM</option>
-              <option value="09:00">9:00 AM</option>
-              <option value="10:00">10:00 AM</option>
-              <option value="11:00">11:00 AM</option>
-              <option value="12:00">12:00 PM — Noon</option>
-              <option value="13:00">1:00 PM</option>
-              <option value="14:00">2:00 PM</option>
-              <option value="15:00">3:00 PM</option>
-              <option value="16:00">4:00 PM</option>
-              <option value="17:00">5:00 PM</option>
-              <option value="18:00">6:00 PM</option>
-              <option value="19:00">7:00 PM</option>
-              <option value="20:00">8:00 PM</option>
-              <option value="21:00">9:00 PM</option>
-              <option value="22:00">10:00 PM</option>
-              <option value="23:00">11:00 PM</option>
-            </select>
+              onChange={(val) => updateField("birthTime", val)}
+            />
+            <p className="text-xs text-[#6b6459] mt-2">
+              Precise time is used to calculate true solar time. Leave blank if unknown (we'll default to noon).
+            </p>
           </div>
 
           <div>
             <label
               htmlFor="birthCity"
-              className="block text-sm font-semibold text-stone-700 mb-1.5"
+              className="block text-sm font-semibold text-[#f0e6d3] mb-1.5"
             >
               Birth City <span className="text-red-500">*</span>
             </label>
@@ -359,8 +334,8 @@ export default function OrderForm() {
               value={form.birthCity}
               onChange={(e) => updateField("birthCity", e.target.value)}
               placeholder="e.g. New York, USA"
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-white text-stone-900 placeholder-stone-400 focus:outline-none focus:border-amber-500 transition-colors ${
-                errors.birthCity ? "border-red-400" : "border-stone-200"
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-[#1a1a1a] text-[#f0e6d3] placeholder-[#6b6459] focus:outline-none focus:border-[#c8a951] transition-colors ${
+                errors.birthCity ? "border-red-400" : "border-[#2a2a2a]"
               }`}
             />
             {errors.birthCity && (
@@ -369,37 +344,47 @@ export default function OrderForm() {
           </div>
         </div>
 
-        {/* Focus Area */}
+        {/* Gender */}
         <div>
-          <label
-            htmlFor="focusArea"
-            className="block text-sm font-semibold text-stone-700 mb-1.5"
-          >
-            What would you like to focus on?
+          <label className="block text-sm font-semibold text-[#f0e6d3] mb-1.5">
+            Gender <span className="text-red-500">*</span>
           </label>
-          <select
-            id="focusArea"
-            value={form.focusArea}
-            onChange={(e) => updateField("focusArea", e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border-2 border-stone-200 bg-white text-stone-900 focus:outline-none focus:border-amber-500 transition-colors"
-          >
-            {FOCUS_AREAS.map((area) => (
-              <option key={area.value} value={area.value}>
-                {area.label}
-              </option>
+          <div className="grid grid-cols-3 gap-2">
+            {GENDER_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                disabled={!opt.value}
+                onClick={() => { if (opt.value) updateField("gender", opt.value); }}
+                className={`py-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                  form.gender === opt.value
+                    ? "border-[#c8a951] bg-[#252525] text-[#f0e6d3]"
+                    : opt.value
+                      ? "border-[#2a2a2a] bg-[#1a1a1a] text-[#9c9588] hover:border-[#c8a951]/50"
+                      : "border-[#2a2a2a] bg-[#1a1a1a] text-[#6b6459] cursor-not-allowed"
+                }`}
+              >
+                {opt.label}
+              </button>
             ))}
-          </select>
+          </div>
+          {errors.gender && (
+            <p className="text-red-500 text-xs mt-1">{errors.gender}</p>
+          )}
+          <p className="text-xs text-[#6b6459] mt-1.5">
+            Gender is essential for accurate Bazi interpretation — the same chart reads differently for men and women
+          </p>
         </div>
 
         {/* Submit */}
         <button
           type="submit"
-          className="w-full py-4 bg-amber-600 text-white rounded-xl font-bold text-lg hover:bg-amber-700 transition-all shadow-lg shadow-amber-200"
+          className="w-full py-4 bg-[#c8a951] text-[#0f0f0f] rounded-xl font-bold text-lg hover:bg-[#d4b96a] transition-all shadow-lg shadow-[#c8a951]/20"
         >
           Continue to Payment — {selectedProduct.price}
         </button>
 
-        <p className="text-xs text-stone-400 text-center">
+        <p className="text-xs text-[#6b6459] text-center">
           Your information is only used to generate your report and will never
           be shared. Your report will be delivered to your email within 24 hours.
         </p>

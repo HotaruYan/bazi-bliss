@@ -18,14 +18,12 @@ import * as fs from "fs";
 import * as path from "path";
 import * as dotenv from "dotenv";
 
-// 加载环境变量
+// 必须在 import 本地模块前加载环境变量（ESM import 会被提升）
 const envPath = path.join(process.cwd(), ".env.local");
 if (fs.existsSync(envPath)) {
   dotenv.config({ path: envPath });
 }
 
-import { generateReport } from "../src/lib/ai-report";
-import { sendEmail, buildReportDeliveryEmail } from "../src/lib/email";
 
 const ORDERS_DIR = path.join(process.cwd(), "data", "orders");
 
@@ -36,10 +34,12 @@ interface OrderFile {
   birthDate: string;
   birthTime: string;
   birthCity: string;
+  gender: string;
   focusArea: string;
   productId: string;
   status: "pending" | "paid" | "fulfilled";
   createdAt: string;
+  subscriptionActive?: boolean;
 }
 
 function listOrders(): OrderFile[] {
@@ -59,12 +59,7 @@ async function processOrder(order: OrderFile): Promise<void> {
   console.log(`   Product: ${order.productId}`);
   console.log(`   Email: ${order.email}`);
 
-  const reportType =
-    order.productId === "year-ahead"
-      ? "year-ahead"
-      : order.productId === "annual-pass"
-        ? "life-blueprint"
-        : "life-blueprint";
+  const isAnnualPass = order.productId === "annual-pass";
 
   const productNames: Record<string, string> = {
     "life-blueprint": "Life Blueprint",
@@ -74,38 +69,91 @@ async function processOrder(order: OrderFile): Promise<void> {
   const productName = productNames[order.productId] || "Bazi Reading";
 
   try {
-    // 1. 生成报告
-    console.log("   ⏳ Generating AI report...");
-    const reportMarkdown = await generateReport(
-      {
-        name: order.name,
-        birthDate: order.birthDate,
-        birthTime: order.birthTime,
-        birthCity: order.birthCity,
-        focusArea: order.focusArea,
-      },
-      reportType as "life-blueprint" | "year-ahead" | "monthly"
-    );
+    // 动态导入本地模块（确保 dotenv 已加载）
+    const [{ generateReport }, { sendEmail, buildReportDeliveryEmail, buildAnnualPassDeliveryEmail }, { calculateBazi }] =
+      await Promise.all([
+        import("../src/lib/ai-report"),
+        import("../src/lib/email"),
+        import("../src/lib/bazi-calculator"),
+      ]);
 
-    // 2. 保存报告
-    const reportsDir = path.join(process.cwd(), "data", "reports");
-    if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true });
-    const reportPath = path.join(reportsDir, `${order.orderId}.md`);
-    fs.writeFileSync(reportPath, reportMarkdown);
-    console.log(`   ✅ Report saved: ${reportPath}`);
-
-    // 3. 发送邮件
-    console.log(`   ⏳ Sending email to ${order.email}...`);
-    const sent = await sendEmail({
-      to: order.email,
-      subject: `Your ${productName} Is Ready — Bazi Bliss`,
-      html: buildReportDeliveryEmail(order.name, productName, reportMarkdown),
+    // 0. 先精确排盘
+    const chart = calculateBazi({
+      birthDate: order.birthDate,
+      birthTime: order.birthTime || "unknown",
+      birthCity: order.birthCity,
+      gender: order.gender || "other",
     });
+    console.log(`   📐 Chart: ${chart.yearPillar.stem}${chart.yearPillar.branch} ${chart.monthPillar.stem}${chart.monthPillar.branch} ${chart.dayPillar.stem}${chart.dayPillar.branch} ${chart.hourPillar.stem}${chart.hourPillar.branch}`);
+    console.log(`   ☀ Day Master: ${chart.dayMaster} (${chart.dayMasterYinYang} ${chart.dayMasterElement})`);
 
-    if (sent) {
-      console.log(`   ✅ Email sent!`);
+    // 1. 生成报告（Annual Pass 生成两份）
+    console.log("   ⏳ Generating AI report(s)...");
+    const birthInfo = {
+      name: order.name,
+      birthDate: order.birthDate,
+      birthTime: order.birthTime,
+      birthCity: order.birthCity,
+      gender: order.gender || "other",
+      focusArea: order.focusArea,
+      orderDate: order.createdAt,
+    };
+
+    if (isAnnualPass) {
+      // Annual Pass: 生成 Life Blueprint + Year Ahead 两份报告
+      const [lifeBlueprint, yearAhead] = await Promise.all([
+        generateReport(birthInfo, "life-blueprint", chart),
+        generateReport(birthInfo, "year-ahead", chart),
+      ]);
+
+      // 保存两份报告
+      const reportsDir = path.join(process.cwd(), "data", "reports");
+      if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true });
+      const bpPath = path.join(reportsDir, `${order.orderId}-life-blueprint.md`);
+      const yaPath = path.join(reportsDir, `${order.orderId}-year-ahead.md`);
+      fs.writeFileSync(bpPath, lifeBlueprint);
+      fs.writeFileSync(yaPath, yearAhead);
+      console.log(`   ✅ Reports saved: ${bpPath}, ${yaPath}`);
+
+      // 发送 Annual Pass 专属交付邮件（含两份报告预览）
+      console.log(`   ⏳ Sending Annual Pass delivery email to ${order.email}...`);
+      const sent = await sendEmail({
+        to: order.email,
+        subject: `Your Bazi Bliss Annual Pass — Reports Are Ready!`,
+        html: buildAnnualPassDeliveryEmail(order.name, lifeBlueprint, yearAhead),
+      });
+
+      if (sent) {
+        console.log(`   ✅ Email sent!`);
+      } else {
+        console.log(`   ⚠ Email not sent (check RESEND_API_KEY)`);
+      }
+
+      // 激活订阅
+      order.subscriptionActive = true;
     } else {
-      console.log(`   ⚠ Email not sent (check RESEND_API_KEY)`);
+      // 普通订单：生成单份报告
+      const reportType = order.productId === "year-ahead" ? "year-ahead" : "life-blueprint";
+      const reportMarkdown = await generateReport(birthInfo, reportType, chart);
+
+      const reportsDir = path.join(process.cwd(), "data", "reports");
+      if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true });
+      const reportPath = path.join(reportsDir, `${order.orderId}.md`);
+      fs.writeFileSync(reportPath, reportMarkdown);
+      console.log(`   ✅ Report saved: ${reportPath}`);
+
+      console.log(`   ⏳ Sending email to ${order.email}...`);
+      const sent = await sendEmail({
+        to: order.email,
+        subject: `Your ${productName} Is Ready — Bazi Bliss`,
+        html: buildReportDeliveryEmail(order.name, productName, reportMarkdown),
+      });
+
+      if (sent) {
+        console.log(`   ✅ Email sent!`);
+      } else {
+        console.log(`   ⚠ Email not sent (check RESEND_API_KEY)`);
+      }
     }
 
     // 4. 标记为已完成
@@ -114,7 +162,7 @@ async function processOrder(order: OrderFile): Promise<void> {
       path.join(ORDERS_DIR, `${order.orderId}.json`),
       JSON.stringify(order, null, 2)
     );
-    console.log(`   ✅ Order marked as fulfilled.\n`);
+    console.log(`   ✅ Order marked as fulfilled.${isAnnualPass ? " 🔁 Subscription active." : ""}\n`);
   } catch (err) {
     console.error(`   ❌ Failed to process order: ${err}\n`);
   }

@@ -47,17 +47,21 @@ export async function POST(request: NextRequest) {
     const email = attributes.user_email || attributes.user_data?.email;
     const name = attributes.user_name || customData?.name || "Customer";
 
-    const orderData: OrderData = {
+    const isAnnualPass = (customData.productId || "life-blueprint") === "annual-pass";
+
+    const orderData: OrderData & { subscriptionActive?: boolean } = {
       orderId,
       name,
       email,
       birthDate: customData.birthDate || "",
       birthTime: customData.birthTime || "unknown",
       birthCity: customData.birthCity || "",
+      gender: customData.gender || "other",
       focusArea: customData.focusArea || "general",
       productId: customData.productId || "life-blueprint",
       status: "paid",
       createdAt: new Date().toISOString(),
+      ...(isAnnualPass ? { subscriptionActive: true } : {}),
     };
 
     // 保存订单到本地文件（供运营者查看和处理）
@@ -71,14 +75,24 @@ export async function POST(request: NextRequest) {
     };
     const productName = productNames[orderData.productId] || "Bazi Reading";
 
-    await sendEmail({
-      to: email,
-      subject: `Your ${productName} Order — Bazi Bliss`,
-      html: buildConfirmationEmail(name, productName),
-    });
+    if (isAnnualPass) {
+      const { buildAnnualPassConfirmationEmail } = await import("@/lib/email");
+      await sendEmail({
+        to: email,
+        subject: `Welcome to Bazi Bliss Annual Pass!`,
+        html: buildAnnualPassConfirmationEmail(name),
+      });
+    } else {
+      await sendEmail({
+        to: email,
+        subject: `Your ${productName} Order — Bazi Bliss`,
+        html: buildConfirmationEmail(name, productName),
+      });
+    }
 
-    console.log(`✅ New order received: ${orderId} — ${name} (${productName})`);
+    console.log(`✅ New order received: ${orderId} — ${name} (${productName})${isAnnualPass ? " 🎉 Annual Pass" : ""}`);
     console.log(`   Email sent to: ${email}`);
+    if (isAnnualPass) console.log(`   🔁 Subscription activated — monthly reports will be sent automatically.`);
     console.log(`   ⚠ Manual action needed: Generate AI report for this order.`);
 
     return NextResponse.json({ received: true, orderId });

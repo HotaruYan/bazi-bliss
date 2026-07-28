@@ -8,13 +8,13 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-3xl md:text-4xl font-bold text-stone-900 mb-8">
+    <div className="max-w-3xl mx-auto px-4 py-16 bg-[#0f0f0f] min-h-screen">
+      <h1 className="text-3xl md:text-4xl font-bold text-[#f0e6d3] mb-8">
         About Bazi Bliss
       </h1>
 
-      <div className="prose prose-stone max-w-none space-y-6 text-stone-600 leading-relaxed">
-        <p className="text-lg">
+      <div className="space-y-6 text-[#9c9588] leading-relaxed">
+        <p className="text-lg text-[#f0e6d3]">
           Bazi Bliss was born from a simple question: <em>what if the ancient wisdom
           of Chinese astrology could speak clearly to modern life?</em>
         </p>
@@ -34,7 +34,7 @@ export default function AboutPage() {
           insights you can actually use.
         </p>
 
-        <h2 className="text-xl font-bold text-stone-900 mt-10">Our Approach</h2>
+        <h2 className="text-xl font-bold text-[#f0e6d3] mt-10">Our Approach</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           {[
@@ -57,15 +57,15 @@ export default function AboutPage() {
           ].map((item, i) => (
             <div
               key={i}
-              className="bg-white border border-stone-200 rounded-xl p-5"
+              className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5"
             >
-              <h3 className="font-bold text-stone-900 mb-2">{item.title}</h3>
-              <p className="text-sm text-stone-500">{item.desc}</p>
+              <h3 className="font-bold text-[#f0e6d3] mb-2">{item.title}</h3>
+              <p className="text-sm text-[#9c9588]">{item.desc}</p>
             </div>
           ))}
         </div>
 
-        <h2 className="text-xl font-bold text-stone-900 mt-10">
+        <h2 className="text-xl font-bold text-[#f0e6d3] mt-10">
           A Note on Ethics
         </h2>
         <p>
@@ -79,7 +79,7 @@ export default function AboutPage() {
         <div className="mt-12 text-center">
           <Link
             href="/order?product=life-blueprint"
-            className="inline-block px-8 py-4 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition-all"
+            className="inline-block px-8 py-4 btn-gold rounded-xl"
           >
             Get Your Life Blueprint
           </Link>

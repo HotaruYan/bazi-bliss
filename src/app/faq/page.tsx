@@ -70,17 +70,19 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16">
-      <h1 className="text-3xl md:text-4xl font-bold text-stone-900 text-center mb-3">
-        Frequently Asked Questions
-      </h1>
-      <p className="text-stone-500 text-center mb-12">
-        Everything you need to know about Bazi and our reports.
-      </p>
-      <div className="bg-white rounded-2xl border border-stone-200 px-6 py-2 shadow-sm">
-        {faqs.map((faq, i) => (
-          <FAQItem key={i} {...faq} />
-        ))}
+    <div className="min-h-screen bg-[#0f0f0f]">
+      <div className="max-w-2xl mx-auto px-4 py-16">
+        <h1 className="text-3xl md:text-4xl font-bold text-[#f0e6d3] text-center mb-3">
+          Frequently Asked Questions
+        </h1>
+        <p className="text-[#9c9588] text-center mb-12">
+          Everything you need to know about Bazi and our reports.
+        </p>
+        <div className="bg-[#1a1a1a] rounded-2xl border border-[#2a2a2a] px-6 py-2">
+          {faqs.map((faq, i) => (
+            <FAQItem key={i} {...faq} />
+          ))}
+        </div>
       </div>
     </div>
   );

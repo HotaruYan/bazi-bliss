@@ -10,10 +10,10 @@ import { createCheckout } from "@/lib/lemon-squeezy";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, birthDate, birthTime, birthCity, focusArea, productId } = body;
+    const { name, email, birthDate, birthTime, birthCity, gender, focusArea, productId } = body;
 
     // 基本验证
-    if (!name || !email || !birthDate || !birthCity || !productId) {
+    if (!name || !email || !birthDate || !birthCity || !gender || !productId) {
       return NextResponse.json(
         { error: "Missing required fields. Please fill in all required information." },
         { status: 400 }
@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
       birthDate,
       birthTime: birthTime || "unknown",
       birthCity,
+      gender,
       focusArea: focusArea || "general",
       productId,
     });

@@ -12,12 +12,12 @@ export default function TestimonialCard({
   product,
 }: TestimonialCardProps) {
   return (
-    <div className="bg-white rounded-xl p-6 border border-stone-200">
+    <div className="bg-[#1a1a1a] rounded-xl p-6 border border-[#2a2a2a]">
       <div className="flex gap-1 mb-4">
         {[...Array(5)].map((_, i) => (
           <svg
             key={i}
-            className="w-4 h-4 text-amber-500"
+            className="w-4 h-4 text-[#c8a951]"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -25,15 +25,15 @@ export default function TestimonialCard({
           </svg>
         ))}
       </div>
-      <blockquote className="text-sm text-stone-600 leading-relaxed mb-4 italic">
+      <blockquote className="text-sm text-[#9c9588] leading-relaxed mb-4 italic">
         &ldquo;{quote}&rdquo;
       </blockquote>
-      <div className="text-xs text-stone-500">
-        <span className="font-semibold text-stone-700">{name}</span>
+      <div className="text-xs text-[#6b6459]">
+        <span className="font-semibold text-[#f0e6d3]">{name}</span>
         {" · "}
         {location}
         <br />
-        <span className="text-amber-700">{product}</span>
+        <span className="text-[#c8a951]">{product}</span>
       </div>
     </div>
   );

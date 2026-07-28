@@ -16,6 +16,7 @@ interface CreateCheckoutParams {
   birthDate: string;
   birthTime: string;
   birthCity: string;
+  gender: string;
   focusArea: string;
   productId: string;
 }
@@ -71,6 +72,7 @@ export async function createCheckout(
                   birthDate: params.birthDate,
                   birthTime: params.birthTime,
                   birthCity: params.birthCity,
+                  gender: params.gender,
                   focusArea: params.focusArea,
                   productId: params.productId,
                 },
@@ -123,6 +125,7 @@ export interface OrderData {
   birthDate: string;
   birthTime: string;
   birthCity: string;
+  gender: string;
   focusArea: string;
   productId: string;
   status: "pending" | "paid" | "fulfilled";
