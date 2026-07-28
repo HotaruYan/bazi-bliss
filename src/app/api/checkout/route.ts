@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCheckout } from "@/lib/lemon-squeezy";
+import { getGumroadCheckoutUrl, PRODUCT_MAP } from "@/lib/gumroad";
+import fs from "fs";
+import path from "path";
 
 /**
  * POST /api/checkout
  *
- * 接收用户订单表单，创建 Lemon Squeezy 付款链接并返回。
- * MVP 阶段：订单数据通过 Lemon Squeezy checkout_data custom 字段传递。
+ * 接收用户订单表单，保存订单为 pending，返回 Gumroad 付款链接。
+ * 付款成功后 Gumroad Webhook 通知我们，自动生成报告。
  */
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +29,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const checkoutUrl = await createCheckout({
+    if (!PRODUCT_MAP[productId]) {
+      return NextResponse.json(
+        { error: "Invalid product selected." },
+        { status: 400 }
+      );
+    }
+
+    const product = PRODUCT_MAP[productId];
+
+    // 生成唯一订单 ID
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
+    const orderId = `${product.slug}-${timestamp}-${random}`;
+
+    // 保存 pending 订单
+    const order = {
+      orderId,
       name,
       email,
       birthDate,
@@ -36,14 +54,18 @@ export async function POST(request: NextRequest) {
       gender,
       focusArea: focusArea || "general",
       productId,
-    });
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      ...(productId === "annual-pass" ? { subscriptionActive: false } : {}),
+    };
 
-    if (!checkoutUrl) {
-      return NextResponse.json(
-        { error: "Unable to create checkout. Please try again or contact support." },
-        { status: 500 }
-      );
-    }
+    const dir = process.env.ORDERS_DIR || path.join(process.cwd(), "data", "orders");
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, `${orderId}.json`), JSON.stringify(order, null, 2));
+
+    console.log(`📝 Order saved: ${orderId} — ${name} (${product.name})`);
+
+    const checkoutUrl = getGumroadCheckoutUrl(productId);
 
     return NextResponse.json({ checkoutUrl });
   } catch (err) {
