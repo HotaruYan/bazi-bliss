@@ -1,0 +1,71 @@
+{
+  "expo": {
+    "name": "Bazi Bliss",
+    "slug": "bazi-bliss",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "bazibliss",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bazibliss.app",
+      "buildNumber": "1",
+      "usesAppleSignIn": true,
+      "appStoreUrl": "https://apps.apple.com/app/bazi-bliss/id0000000000",
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "This identifier will be used to deliver personalized cosmic insights and restore your purchases.",
+        "CFBundleDisplayName": "Bazi Bliss",
+        "CFBundleSpokenName": "Bazi Bliss",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "associatedDomains": [
+        "applinks:bazibliss.com"
+      ]
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F9F6F1",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.bazibliss.app",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-apple-authentication",
+      "expo-secure-store",
+      "expo-localization",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#C8846E"
+        }
+      ],
+      "@react-native-community/datetimepicker"
+    ],
+    "extra": {
+      "apiBaseUrl": "https://bazibliss.com/api/mobile",
+      "revenuecatAppleApiKey": "rc_appl_xjLnXPbRzOMFzQmNdDMCGSLExkUuMXoUiLhnN",
+      "revenuecatAppleApiKeyProduction": "rc_appl_PLACEHOLDER_PRODUCTION_KEY",
+      "environment": "development",
+      "eas": {
+        "projectId": "cb79923d-b9ff-4993-b86b-e7789c1032e5"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cb79923d-b9ff-4993-b86b-e7789c1032e5",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 10000
+    },
+    "owner": "yanayan"
+  }
+}
