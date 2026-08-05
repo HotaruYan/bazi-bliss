@@ -1,27 +1,30 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useI18n } from "@/i18n";
 import TimeWheel from "./TimeWheel";
+import LocationPicker from "./LocationPicker";
 
 type Product = "life-blueprint" | "year-ahead" | "annual-pass";
 
-const PRODUCTS: Record<
-  Product,
-  { label: string; desc: string; price: string }
-> = {
+const PRODUCT_KEYS: Record<Product, {
+  labelKey: "product_life_blueprint" | "product_year_ahead" | "product_annual_pass";
+  descKey: "product_life_blueprint_desc" | "product_year_ahead_desc" | "product_annual_pass_desc";
+  price: string;
+}> = {
   "life-blueprint": {
-    label: "Life Blueprint",
-    desc: "8000+ word complete birth chart analysis",
+    labelKey: "product_life_blueprint",
+    descKey: "product_life_blueprint_desc",
     price: "$39.99",
   },
   "year-ahead": {
-    label: "Year Ahead",
-    desc: "3000+ word annual forecast & guidance",
+    labelKey: "product_year_ahead",
+    descKey: "product_year_ahead_desc",
     price: "$19.99",
   },
   "annual-pass": {
-    label: "Annual Pass",
-    desc: "Life Blueprint + Year Ahead + 12 monthly forecasts",
+    labelKey: "product_annual_pass",
+    descKey: "product_annual_pass_desc",
     price: "$99.99",
   },
 };
@@ -38,12 +41,14 @@ interface OrderFormData {
 }
 
 const GENDER_OPTIONS = [
-  { value: "", label: "Select" },
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
+  { value: "", labelKey: "chart_form_gender_select" as const },
+  { value: "male", labelKey: "chart_form_gender_male" as const },
+  { value: "female", labelKey: "chart_form_gender_female" as const },
 ];
 
 export default function OrderForm() {
+  const { t } = useI18n();
+
   const [form, setForm] = useState<OrderFormData>({
     name: "",
     email: "",
@@ -57,24 +62,24 @@ export default function OrderForm() {
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay] = useState("");
   const [birthYear, setBirthYear] = useState("");
+  const [longitude, setLongitude] = useState<number | null>(null);
   const [errors, setErrors] = useState<Partial<Record<keyof OrderFormData, string>>>({});
-  const [submitted, setSubmitted] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const MONTHS = [
-    { value: "", label: "Month" },
-    { value: "01", label: "January" },
-    { value: "02", label: "February" },
-    { value: "03", label: "March" },
-    { value: "04", label: "April" },
-    { value: "05", label: "May" },
-    { value: "06", label: "June" },
-    { value: "07", label: "July" },
-    { value: "08", label: "August" },
-    { value: "09", label: "September" },
-    { value: "10", label: "October" },
-    { value: "11", label: "November" },
-    { value: "12", label: "December" },
+    { value: "", label: t("month_label") },
+    { value: "01", label: t("month_jan") },
+    { value: "02", label: t("month_feb") },
+    { value: "03", label: t("month_mar") },
+    { value: "04", label: t("month_apr") },
+    { value: "05", label: t("month_may") },
+    { value: "06", label: t("month_jun") },
+    { value: "07", label: t("month_jul") },
+    { value: "08", label: t("month_aug") },
+    { value: "09", label: t("month_sep") },
+    { value: "10", label: t("month_oct") },
+    { value: "11", label: t("month_nov") },
+    { value: "12", label: t("month_dec") },
   ];
 
   const currentYear = new Date().getFullYear();
@@ -82,15 +87,14 @@ export default function OrderForm() {
     const y = currentYear - i;
     return { value: String(y), label: String(y) };
   });
-  YEARS.unshift({ value: "", label: "Year" });
+  YEARS.unshift({ value: "", label: t("year_label") });
 
   const DAYS = Array.from({ length: 31 }, (_, i) => {
     const d = String(i + 1).padStart(2, "0");
     return { value: d, label: String(i + 1) };
   });
-  DAYS.unshift({ value: "", label: "Day" });
+  DAYS.unshift({ value: "", label: t("day_label") });
 
-  // 月日年变化时自动合成 birthDate
   const updateBirthDate = (month: string, day: string, year: string) => {
     if (month && day && year) {
       setForm((prev) => ({ ...prev, birthDate: `${year}-${month}-${day}` }));
@@ -102,7 +106,7 @@ export default function OrderForm() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const productParam = params.get("product") as Product;
-    if (productParam && PRODUCTS[productParam]) {
+    if (productParam && PRODUCT_KEYS[productParam]) {
       setForm((prev) => ({ ...prev, product: productParam }));
     }
   }, []);
@@ -110,15 +114,15 @@ export default function OrderForm() {
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof OrderFormData, string>> = {};
 
-    if (!form.name.trim()) newErrors.name = "Name is required.";
+    if (!form.name.trim()) newErrors.name = t("order_name_req");
     if (!form.email.trim()) {
-      newErrors.email = "Email is required.";
+      newErrors.email = t("order_email_req");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      newErrors.email = "Enter a valid email address.";
+      newErrors.email = t("order_email_invalid");
     }
-    if (!form.birthDate) newErrors.birthDate = "Birth date is required.";
-    if (!form.birthCity.trim()) newErrors.birthCity = "Birth city is required.";
-    if (!form.gender) newErrors.gender = "Please select your gender.";
+    if (!form.birthDate) newErrors.birthDate = t("order_date_req");
+    if (!form.birthCity.trim()) newErrors.birthCity = t("order_city_req");
+    if (!form.gender) newErrors.gender = t("order_gender_req");
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -147,7 +151,6 @@ export default function OrderForm() {
       const data = await res.json();
 
       if (data.checkoutUrl) {
-        // 订单数据暂存浏览器，付款后 thank-you 页读取并触发发货
         localStorage.setItem("bazi_order", JSON.stringify({
           name: form.name,
           email: form.email,
@@ -157,13 +160,14 @@ export default function OrderForm() {
           gender: form.gender,
           focusArea: form.focusArea,
           productId: form.product,
+          longitude,
         }));
         window.location.href = data.checkoutUrl;
       } else if (data.error) {
         setErrors({ email: data.error });
       }
     } catch {
-      setErrors({ email: "Something went wrong. Please try again." });
+      setErrors({ email: t("order_error") });
     }
   };
 
@@ -176,7 +180,7 @@ export default function OrderForm() {
     });
   };
 
-  const selectedProduct = PRODUCTS[form.product];
+  const selectedProduct = PRODUCT_KEYS[form.product];
 
   return (
     <>
@@ -184,10 +188,10 @@ export default function OrderForm() {
         {/* Product Selection */}
         <div>
           <label className="block text-sm font-semibold text-[#f0e6d3] mb-3">
-            Select Your Reading
+            {t("order_select")}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {(Object.entries(PRODUCTS) as [Product, typeof PRODUCTS[Product]][]).map(
+            {(Object.entries(PRODUCT_KEYS) as [Product, typeof PRODUCT_KEYS[Product]][]).map(
               ([key, product]) => (
                 <button
                   key={key}
@@ -200,10 +204,10 @@ export default function OrderForm() {
                   }`}
                 >
                   <div className="font-bold text-[#f0e6d3] text-sm">
-                    {product.label}
+                    {t(product.labelKey)}
                   </div>
                   <div className="text-xs text-[#9c9588] mt-1">
-                    {product.desc}
+                    {t(product.descKey)}
                   </div>
                   <div className="text-[#c8a951] font-bold text-sm mt-2">
                     {product.price}
@@ -221,14 +225,14 @@ export default function OrderForm() {
               htmlFor="name"
               className="block text-sm font-semibold text-[#f0e6d3] mb-1.5"
             >
-              Full Name <span className="text-red-500">*</span>
+              {t("chart_form_name")} <span className="text-red-500">*</span>
             </label>
             <input
               id="name"
               type="text"
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
-              placeholder="Your full name"
+              placeholder={t("chart_form_name_placeholder")}
               className={`w-full px-4 py-3 rounded-xl border-2 bg-[#1a1a1a] text-[#f0e6d3] placeholder-[#6b6459] focus:outline-none focus:border-[#c8a951] transition-colors ${
                 errors.name ? "border-red-400" : "border-[#2a2a2a]"
               }`}
@@ -243,7 +247,7 @@ export default function OrderForm() {
               htmlFor="email"
               className="block text-sm font-semibold text-[#f0e6d3] mb-1.5"
             >
-              Email Address <span className="text-red-500">*</span>
+              Email <span className="text-red-500">*</span>
             </label>
             <input
               id="email"
@@ -265,7 +269,7 @@ export default function OrderForm() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-semibold text-[#f0e6d3] mb-1.5">
-              Birth Date <span className="text-red-500">*</span>
+              {t("chart_form_birth_date")} <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-3 gap-2">
               <select
@@ -321,44 +325,28 @@ export default function OrderForm() {
 
           <div>
             <label className="block text-sm font-semibold text-[#f0e6d3] mb-1.5">
-              Birth Time
+              {t("chart_form_birth_time")}
             </label>
             <TimeWheel
               value={form.birthTime}
               onChange={(val) => updateField("birthTime", val)}
             />
-            <p className="text-xs text-[#6b6459] mt-2">
-              Precise time is used to calculate true solar time. Leave blank if unknown (we'll default to noon).
-            </p>
+            <p className="text-xs text-[#6b6459] mt-2">{t("chart_form_time_note")}</p>
           </div>
 
-          <div>
-            <label
-              htmlFor="birthCity"
-              className="block text-sm font-semibold text-[#f0e6d3] mb-1.5"
-            >
-              Birth City <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="birthCity"
-              type="text"
-              value={form.birthCity}
-              onChange={(e) => updateField("birthCity", e.target.value)}
-              placeholder="e.g. New York, USA"
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-[#1a1a1a] text-[#f0e6d3] placeholder-[#6b6459] focus:outline-none focus:border-[#c8a951] transition-colors ${
-                errors.birthCity ? "border-red-400" : "border-[#2a2a2a]"
-              }`}
-            />
-            {errors.birthCity && (
-              <p className="text-red-500 text-xs mt-1">{errors.birthCity}</p>
-            )}
-          </div>
+          <LocationPicker
+            city={form.birthCity}
+            onCityChange={(val) => updateField("birthCity", val)}
+            longitude={longitude}
+            onLongitudeChange={setLongitude}
+            error={errors.birthCity}
+          />
         </div>
 
         {/* Gender */}
         <div>
           <label className="block text-sm font-semibold text-[#f0e6d3] mb-1.5">
-            Gender <span className="text-red-500">*</span>
+            {t("chart_form_gender")} <span className="text-red-500">*</span>
           </label>
           <div className="grid grid-cols-3 gap-2">
             {GENDER_OPTIONS.map((opt) => (
@@ -375,16 +363,14 @@ export default function OrderForm() {
                       : "border-[#2a2a2a] bg-[#1a1a1a] text-[#6b6459] cursor-not-allowed"
                 }`}
               >
-                {opt.label}
+                {t(opt.labelKey)}
               </button>
             ))}
           </div>
           {errors.gender && (
             <p className="text-red-500 text-xs mt-1">{errors.gender}</p>
           )}
-          <p className="text-xs text-[#6b6459] mt-1.5">
-            Gender is essential for accurate Bazi interpretation — the same chart reads differently for men and women
-          </p>
+          <p className="text-xs text-[#6b6459] mt-1.5">{t("chart_form_gender_note")}</p>
         </div>
 
         {/* Submit */}
@@ -392,13 +378,10 @@ export default function OrderForm() {
           type="submit"
           className="w-full py-4 bg-[#c8a951] text-[#0f0f0f] rounded-xl font-bold text-lg hover:bg-[#d4b96a] transition-all shadow-lg shadow-[#c8a951]/20"
         >
-          Continue to Payment — {selectedProduct.price}
+          {t("order_submit")}{selectedProduct.price}
         </button>
 
-        <p className="text-xs text-[#6b6459] text-center">
-          Your information is only used to generate your report and will never
-          be shared. Your report will be delivered to your email within 24 hours.
-        </p>
+        <p className="text-xs text-[#6b6459] text-center">{t("order_privacy")}</p>
       </form>
     </>
   );

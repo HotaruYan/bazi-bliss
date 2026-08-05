@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
+import ClientLayout from "@/components/ClientLayout";
+import type { Lang } from "@/i18n";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,128 +16,35 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bazi Bliss — Discover Your Life Blueprint with Ancient Chinese Wisdom",
+  title: "Bazi Bliss — AI 八字命盘解读",
   description:
-    "Unlock the secrets of your birth chart with AI-powered Bazi analysis. Get a personalized 8000-word Life Blueprint covering career, love, wealth, and health.",
+    "用AI解锁八字命盘的秘密。获取8000字个性化命盘解读，涵盖事业、感情、财富、健康。免费排盘，深度解读付费。",
   keywords: [
-    "bazi",
-    "chinese astrology",
-    "life blueprint",
-    "birth chart",
-    "five elements",
-    "chinese zodiac",
-    "fortune telling",
-    "destiny analysis",
+    "bazi", "八字", "命盘", "四柱", "五行", "AI算命", "八字排盘",
+    "chinese astrology", "life blueprint", "birth chart", "five elements",
   ],
   openGraph: {
-    title: "Bazi Bliss — Your Life Blueprint",
+    title: "Bazi Bliss — AI 八字命盘解读",
     description:
-      "Ancient Chinese wisdom meets AI. Discover what your birth date reveals about your destiny.",
+      "千年智慧遇见现代AI。免费排盘，探索你的八字命盘蓝图。",
     type: "website",
   },
 };
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/order", label: "Get Your Blueprint" },
-  { href: "/about", label: "About" },
-  { href: "/blog", label: "Blog" },
-  { href: "/faq", label: "FAQ" },
-];
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const cookieStore = await cookies();
+  const langCookie = cookieStore.get("bazi-lang")?.value;
+  const initialLang: Lang = langCookie === "en" ? "en" : "zh";
+
   return (
     <html
-      lang="en"
+      lang={initialLang === "zh" ? "zh-CN" : "en"}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#0f0f0f] text-[#f0e6d3]">
-        {/* Header */}
-        <header className="sticky top-0 z-50 bg-[#0f0f0f]/85 backdrop-blur-md border-b border-[#2a2a2a]">
-          <nav className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-            <Link
-              href="/"
-              className="text-xl font-bold tracking-tight text-[#f0e6d3] hover:text-[#c8a951] transition-colors"
-            >
-              Bazi<span className="text-[#c8a951]">Bliss</span>
-            </Link>
-            <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-[#9c9588] hover:text-[#c8a951] transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                href="/order"
-                className="px-4 py-2 bg-[#c8a951] text-[#0f0f0f] rounded-lg hover:bg-[#d4b96a] transition-colors text-sm font-semibold"
-              >
-                Order Now
-              </Link>
-            </div>
-            <Link
-              href="/order"
-              className="md:hidden px-3 py-1.5 bg-[#c8a951] text-[#0f0f0f] rounded-lg text-sm font-semibold"
-            >
-              Order
-            </Link>
-          </nav>
-        </header>
-
-        {/* Main */}
-        <main className="flex-1">{children}</main>
-
-        {/* Footer */}
-        <footer className="bg-[#0a0a0a] text-[#9c9588] py-16 border-t border-[#2a2a2a]">
-          <div className="max-w-5xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div>
-              <h3 className="text-[#f0e6d3] font-bold text-lg mb-3">
-                Bazi<span className="text-[#c8a951]">Bliss</span>
-              </h3>
-              <p className="text-sm leading-relaxed">
-                Ancient Chinese wisdom meets modern AI. Discover your life
-                blueprint through the art of Bazi astrology.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-[#f0e6d3] font-semibold mb-3 text-sm uppercase tracking-wider">
-                Pages
-              </h4>
-              <ul className="space-y-2 text-sm">
-                {navLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="hover:text-[#c8a951] transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-[#f0e6d3] font-semibold mb-3 text-sm uppercase tracking-wider">
-                Disclaimer
-              </h4>
-              <p className="text-xs leading-relaxed">
-                Bazi Bliss provides content for entertainment and
-                self-reflection purposes only. It is not a substitute for
-                professional medical, legal, or financial advice. Your birth
-                chart shows tendencies, not destiny — you always have free will.
-              </p>
-            </div>
-          </div>
-          <div className="max-w-5xl mx-auto px-4 mt-10 pt-6 border-t border-[#2a2a2a] text-center text-xs">
-            &copy; {new Date().getFullYear()} Bazi Bliss. All rights reserved.
-            For entertainment purposes only.
-          </div>
-        </footer>
+        <ClientLayout initialLang={initialLang}>{children}</ClientLayout>
       </body>
     </html>
   );
