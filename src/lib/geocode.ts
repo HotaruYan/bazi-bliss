@@ -1,13 +1,14 @@
 /**
  * 地理编码工具
  *
- * 三级策略：
- *   1. 浏览器 Geolocation API → 获取精确经纬度
- *   2. OpenStreetMap Nominatim → 地名搜索 → 经纬度
- *   3. 内置城市字典 → 最快但覆盖有限
+ * 四级策略：
+ *   1. 内置中国城市库 (china-cities.ts, 340+ 城市) → 毫秒级
+ *   2. 内置国际城市库 (world-cities.ts, 160+ 城市) → 毫秒级
+ *   3. OpenStreetMap Nominatim → 地名搜索 → 最终回退
  */
 
 import { lookupCity } from "./china-cities";
+import { lookupWorldCity } from "./world-cities";
 
 export interface GeoResult {
   longitude: number;
@@ -58,18 +59,29 @@ interface NominatimResult {
 }
 
 export async function searchPlace(query: string): Promise<GeoResult | null> {
-  // 先查本地城市数据库（340+ 中国城市，快）
-  const cityEntry = lookupCity(query);
-  if (cityEntry) {
+  // 1. 先查中国城市库（340+ 城市）
+  const cnCity = lookupCity(query);
+  if (cnCity) {
     return {
-      longitude: cityEntry.lng,
-      latitude: cityEntry.lat,
-      displayName: cityEntry.province ? `${cityEntry.name}，${cityEntry.province}` : cityEntry.name,
+      longitude: cnCity.lng,
+      latitude: cnCity.lat,
+      displayName: cnCity.province ? `${cnCity.name}，${cnCity.province}` : cnCity.name,
       source: "dictionary",
     };
   }
 
-  // 再调 Nominatim API
+  // 2. 再查国际城市库（160+ 城市）
+  const worldCity = lookupWorldCity(query);
+  if (worldCity) {
+    return {
+      longitude: worldCity.lng,
+      latitude: worldCity.lat,
+      displayName: worldCity.province ? `${worldCity.name}，${worldCity.province}` : worldCity.name,
+      source: "dictionary",
+    };
+  }
+
+  // 3. 回退到 Nominatim API
   try {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&accept-language=zh`;
 
